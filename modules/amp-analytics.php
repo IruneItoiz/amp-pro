@@ -37,7 +37,7 @@ function amp_pro_add_analytics() {
                     \"request\": \"event\",
                     \"vars\": {
                         \"eventCategory\": \"outbound\",
-                            \"eventAction\": \"click\",
+                            \"eventAction\": \"link\",
                             \"eventLabel\": ". '"${outboundLink}"'."
                     }
 \n              }";
