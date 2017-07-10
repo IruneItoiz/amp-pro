@@ -23,7 +23,7 @@
 */
 
 require_once 'modules/amp-analytics.php';
-
+require_once 'modules/amp-adsense.php';
 class ampProSettings
 {
 
@@ -69,15 +69,26 @@ class ampProSettings
      */
     function registerSettings() {
 
-        add_settings_section( 'amp_pro_google_analytics', __( 'Google Analytics', 'amp-pro-analytics' ), array ($this, 'googleAnalyticsCallback'), 'amp-pro' );
 
-        add_settings_field( 'amp_pro_analytics_ga_ua', __( 'Google Analytics ID: <br/><em><a href="https://support.google.com/analytics/answer/1032385?hl=en" target="_blank">Need help finding your tracking ID?</a></em>', 'amp-analytics' ), array ($this, 'gaUACallback'), 'amp-pro', 'amp_pro_google_analytics' );
+        register_setting( 'amp-pro', 'amp_pro_analytics_settings', array ($this, 'amp_pro_settings_sanitize_callback') );
+        register_setting( 'amp-pro', 'amp_pro_adsense_settings', array ($this, 'amp_pro_settings_sanitize_callback') );
 
-        add_settings_field( 'amp_pro_analytics_outbound', __( 'Track outbound links?: ', 'amp-analytics' ), array ($this, 'outboundTrackingCallback'), 'amp-pro', 'amp_pro_google_analytics' );
+        //Settings for Google Analytics tracking
+        add_settings_section( 'amp_pro_analytics_settings', __( 'Google Analytics', 'amp-pro' ), array ($this, 'googleAnalyticsCallback'), 'amp-pro' );
 
-        add_settings_field( 'amp_pro_analytics_amazon', __( 'Track only Amazon links?: ', 'amp-analytics' ), array ($this, 'amazonTrackingCallback'), 'amp-pro', 'amp_pro_google_analytics' );
+        //Settings for Advertising
+        add_settings_section( 'amp_pro_adsense_settings', __( 'Google Adsense', 'amp-pro' ), array ($this, 'googleAdSenseCallback'), 'amp-pro' );
 
-        register_setting( 'amp_pro_analytics_settings', 'amp_pro_analytics_settings', array ($this, 'amp_analytics_settings_sanitize_callback') );
+
+
+        add_settings_field( 'amp_pro_analytics_ga_ua', __( 'Google Analytics ID: <br/><em><a href="https://support.google.com/analytics/answer/1032385?hl=en" target="_blank">Need help finding your tracking ID?</a></em>', 'amp-pro' ), array ($this, 'gaUACallback'), 'amp-pro', 'amp_pro_analytics_settings' );
+        add_settings_field( 'amp_pro_analytics_outbound', __( 'Track outbound links?: ', 'amp-pro' ), array ($this, 'outboundTrackingCallback'), 'amp-pro', 'amp_pro_analytics_settings' );
+        add_settings_field( 'amp_pro_analytics_amazon', __( 'Track only Amazon links?: ', 'amp-pro' ), array ($this, 'amazonTrackingCallback'), 'amp-pro', 'amp_pro_analytics_settings' );
+
+
+        add_settings_field( 'amp_pro_adsense_account', __( 'Google AdSense ID: ', 'amp-pro' ), array ($this, 'adSenseAccountCallback'), 'amp-pro', 'amp_pro_adsense_settings' );
+        add_settings_field( 'amp_pro_adsense_adslot', __( 'Google AdSense AdSlot: ', 'amp-pro' ), array ($this, 'adSenseAdSlotCallback'), 'amp-pro', 'amp_pro_adsense_settings' );
+
 
     }
 
@@ -91,13 +102,14 @@ class ampProSettings
         ?>
         <form action='options.php' method='post' enctype='multipart/form-data'>
 
-            <h1>AMP Analytics</h1>
+            <h1>AMP Analytics & AdSense integration</h1>
 
             <?php
-            settings_fields( 'amp_pro_analytics_settings' );
+            settings_fields( 'amp-pro' );
             do_settings_sections( 'amp-pro' );
             submit_button();
             ?>
+
 
         </form>
         <?php
@@ -109,6 +121,14 @@ class ampProSettings
      * @since 0.0.1
      */
     function googleAnalyticsCallback() {}
+
+
+    /**
+     * Google AdSense section callback.
+     *
+     * @since 0.0.1
+     */
+    function googleAdSenseCallback() {}
 
     /**
      * Google Analytics UA setting callback.
@@ -153,14 +173,39 @@ class ampProSettings
             ?>
         >
         <?php
+    }
 
 
+    /**
+     * Google AdSense account callback.
+     *
+     */
+    function adSenseAccountCallback()
+    {
+        $options = get_option( 'amp_pro_adsense_settings' );
+
+        ?>
+        <input type='text' name='amp_pro_adsense_settings[amp_pro_adsense_account]' value='<?php echo $options['amp_pro_adsense_account']; ?>'>
+        <?php
+    }
+
+
+    /**
+     * Google AdSense AdSlot account callback.
+     *
+     */
+    function adSenseAdSlotCallback()
+    {
+        $options = get_option( 'amp_pro_adsense_settings' );
+        ?>
+        <input type='text' name='amp_pro_adsense_settings[amp_pro_adsense_adslot]' value='<?php echo $options['amp_pro_adsense_adslot']; ?>'>
+        <?php
     }
 
     /**
      * Sanitizes settings before they get to the database.
      *
-     * @since 0.0.2
+     * @since 0.0.1
      *
      * @param $input array Options array.
      *
@@ -182,6 +227,29 @@ class ampProSettings
 
         return $input;
     }
+
+    /**
+     * Sanitizes settings before they get to the database.
+     *
+     * @since 0.0.1
+     *
+     * @param $input array Options array.
+     *
+     * @return array Sanitized, database-ready options array.
+     */
+    function amp_pro_adsense_settings_sanitize_callback( $input ) {
+
+        if ( $input['amp_pro_adsense_account'] ) {
+            $input['amp_pro_adsense_account'] = sanitize_text_field( $input['amp_pro_adsense_account'] );
+        }
+
+        if ( $input['amp_pro_adsense_adslot'] ) {
+            $input['amp_pro_adsense_adslot'] = sanitize_text_field( $input['amp_pro_adsense_adslot'] );
+        }
+
+        return $input;
+    }
+
 }
 
 new ampProSettings();
