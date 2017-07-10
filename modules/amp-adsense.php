@@ -27,6 +27,8 @@ function amp_pro_add_adsense_inarticle($content)
         </div>
         ';
 
+        $paragraph_per_ad = isset($options['amp_pro_adsense_paragraphs']) ? $options['amp_pro_adsense_paragraphs'] : 2;
+
         //Find the first paragraph after the TOC
         $tocID = stripos($content, 'id="toc_container"');
         $afterTOC = stripos($content, '</div>',$tocID );
@@ -37,7 +39,7 @@ function amp_pro_add_adsense_inarticle($content)
         $content_adsense = '';
         $last_paragraph = count($content_array) - 2;
         foreach ($content_array as $paragraph) {
-            if (!($i % 2) && ($i < $last_paragraph))
+            if (!($i % $paragraph_per_ad) && ($i < $last_paragraph))
                 $content_adsense .= "\n" . $adsense_code . "\n" . $paragraph . '</p>';
             else $content_adsense .= $paragraph . '</p>';
 

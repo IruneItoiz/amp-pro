@@ -58,7 +58,7 @@ class ampProSettings
      * @since 0.0.1
      */
     function addOptionsPage() {
-        add_options_page( 'AMP Pro Analytics', 'AMP Pro Analytics', 'manage_options', 'amp-pro.php', array ($this, 'renderOptionsPage') );
+        add_options_page( 'AMP Pro', 'AMP Pro', 'manage_options', 'amp-pro.php', array ($this, 'renderOptionsPage') );
     }
 
 
@@ -88,7 +88,7 @@ class ampProSettings
 
         add_settings_field( 'amp_pro_adsense_account', __( 'Google AdSense ID: ', 'amp-pro' ), array ($this, 'adSenseAccountCallback'), 'amp-pro', 'amp_pro_adsense_settings' );
         add_settings_field( 'amp_pro_adsense_adslot', __( 'Google AdSense AdSlot: ', 'amp-pro' ), array ($this, 'adSenseAdSlotCallback'), 'amp-pro', 'amp_pro_adsense_settings' );
-
+        add_settings_field( 'amp_pro_adsense_paragraphs', __( 'Paragraphs between ads: ', 'amp-pro' ), array ($this, 'adSenseParagraphsCallback'), 'amp-pro', 'amp_pro_adsense_settings' );
 
     }
 
@@ -202,6 +202,18 @@ class ampProSettings
         <?php
     }
 
+
+    /**
+     * How many paragraphs in between ads
+     *
+     */
+    function adSenseParagraphsCallback()
+    {
+        $options = get_option( 'amp_pro_adsense_settings' );
+        ?>
+        <input type='text' name='amp_pro_adsense_settings[amp_pro_adsense_paragraphs]' value='<?php echo $options['amp_pro_adsense_paragraphs']; ?>'>
+        <?php
+    }
     /**
      * Sanitizes settings before they get to the database.
      *
@@ -245,6 +257,10 @@ class ampProSettings
 
         if ( $input['amp_pro_adsense_adslot'] ) {
             $input['amp_pro_adsense_adslot'] = sanitize_text_field( $input['amp_pro_adsense_adslot'] );
+        }
+
+        if ( $input['amp_pro_adsense_paragraphs'] ) {
+            $input['amp_pro_adsense_paragraphs'] = intval( $input['amp_pro_adsense_paragraphs'] );
         }
 
         return $input;
