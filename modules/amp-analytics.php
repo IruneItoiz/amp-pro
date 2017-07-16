@@ -10,7 +10,7 @@ function amp_analytics_print_scripts(){
 <script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
 <?php
 }
-add_action( 'amp_post_template_head', 'amp_analytics_print_scripts' );
+//add_action( 'amp_post_template_head', 'amp_analytics_print_scripts' );
 
 /**
  * Print the JSON used for tracking.
