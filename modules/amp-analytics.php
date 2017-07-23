@@ -110,7 +110,7 @@ function amp_pro_add_custom_outbound_tags($content)
 
 
         $data_tag = $hrefInner.'" data-vars-outbound-link="'.strip_tags($linkText).'" '.$data_type;
-        echo $data_tag;
+
         $data_length = strlen($data_tag);
         $content = str_replace( $hrefInner, $data_tag, $content);
         $offset += $data_length;

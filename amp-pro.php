@@ -83,7 +83,7 @@ class ampProSettings
 
         add_settings_field( 'amp_pro_analytics_ga_ua', __( 'Google Analytics ID: <br/><em><a href="https://support.google.com/analytics/answer/1032385?hl=en" target="_blank">Need help finding your tracking ID?</a></em>', 'amp-pro' ), array ($this, 'gaUACallback'), 'amp-pro', 'amp_pro_analytics_settings' );
         add_settings_field( 'amp_pro_analytics_outbound', __( 'Track outbound links?: ', 'amp-pro' ), array ($this, 'outboundTrackingCallback'), 'amp-pro', 'amp_pro_analytics_settings' );
-        add_settings_field( 'amp_pro_analytics_amazon', __( 'Track only Amazon links?: ', 'amp-pro' ), array ($this, 'amazonTrackingCallback'), 'amp-pro', 'amp_pro_analytics_settings' );
+        add_settings_field( 'amp_pro_analytics_amazon', __( 'Track Amazon links separately?: ', 'amp-pro' ), array ($this, 'amazonTrackingCallback'), 'amp-pro', 'amp_pro_analytics_settings' );
 
 
         add_settings_field( 'amp_pro_adsense_account', __( 'Google AdSense ID: ', 'amp-pro' ), array ($this, 'adSenseAccountCallback'), 'amp-pro', 'amp_pro_adsense_settings' );
