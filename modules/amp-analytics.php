@@ -36,8 +36,8 @@ function amp_pro_add_analytics() {
                     \"selector\": \"a\",
                     \"request\": \"event\",
                     \"vars\": {
-                        \"eventCategory\": \"outbound\",
-                            \"eventAction\": \"link\",
+                        \"eventCategory\": \"click\",
+                            \"eventAction\": ". '"${linkType}"'.",
                             \"eventLabel\": ". '"${outboundLink}"'."
                     }
 \n              }";
@@ -69,7 +69,7 @@ function amp_pro_add_custom_content_actions() {
 
 function amp_pro_add_custom_outbound_tags($content)
 {
-    $hrefPattern = '/<a[^>]+?href="(.+?)".*?>/i';
+    $hrefPattern = '/<a[^>]+?href="(.+?)".*?>(.+?)<\/a>/i';
 
     $domain = get_site_url();
 
@@ -83,30 +83,37 @@ function amp_pro_add_custom_outbound_tags($content)
 
         $hrefInner = $hrefMatches[1][0];
         $offset = $hrefMatches[1][1];
+        $linkText = $hrefMatches[2][0];
+
+        $external = false;
+        $is_amazon = false;
 
         if((!strstr(strtolower($hrefInner),$domain)))
         {
+            $external = true;
+
             if  ($options['amp_pro_analytics_amazon'])
             {
-                $track = is_amazon_link($hrefInner);
+                $is_amazon = is_amazon_link($hrefInner);
 
-            } else $track = true;
-
-            if ($track) {
-                $data_link = preg_replace('#^https?://#', '', $hrefInner);
-                $data_tag = $hrefInner.'" data-vars-outbound-link="'.$data_link;
-                $data_length = strlen($data_tag);
-                //$contentResult .= $hrefInner  . print_r($hrefMatches, true). "\n";
-                //$externalUrl = $outLink . rawurlencode($hrefInner);
-
-                //echo "Replacing ".$hrefInner." with ".$data_tag."\n";
-                //echo str_replace( $hrefInner, $data_tag, $content)."\n";
-                $content = str_replace( $hrefInner, $data_tag, $content);
-                $offset += $data_length;
             }
-
+        } else {
+            $external = false;
         }
 
+        $data_type = ' data-vars-link-type="';
+        if (!$external)
+            $data_type .= 'internal';
+        else if ($is_amazon)
+            $data_type .= 'amazon';
+        else $data_type .= 'external';
+
+
+        $data_tag = $hrefInner.'" data-vars-outbound-link="'.strip_tags($linkText).'" '.$data_type;
+        echo $data_tag;
+        $data_length = strlen($data_tag);
+        $content = str_replace( $hrefInner, $data_tag, $content);
+        $offset += $data_length;
     }
 
     return $content;

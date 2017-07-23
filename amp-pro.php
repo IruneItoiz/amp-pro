@@ -103,14 +103,11 @@ class ampProSettings
         <form action='options.php' method='post' enctype='multipart/form-data'>
 
             <h1>AMP Analytics & AdSense integration</h1>
-
             <?php
             settings_fields( 'amp-pro' );
             do_settings_sections( 'amp-pro' );
             submit_button();
             ?>
-
-
         </form>
         <?php
     }
