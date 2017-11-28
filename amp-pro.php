@@ -22,7 +22,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require_once 'modules/amp-analytics.php';
 require_once 'modules/amp-adsense.php';
 class ampProSettings
 {
@@ -69,22 +68,10 @@ class ampProSettings
      */
     function registerSettings() {
 
-
-        register_setting( 'amp-pro', 'amp_pro_analytics_settings', array ($this, 'amp_pro_settings_sanitize_callback') );
         register_setting( 'amp-pro', 'amp_pro_adsense_settings', array ($this, 'amp_pro_settings_sanitize_callback') );
-
-        //Settings for Google Analytics tracking
-        add_settings_section( 'amp_pro_analytics_settings', __( 'Google Analytics', 'amp-pro' ), array ($this, 'googleAnalyticsCallback'), 'amp-pro' );
 
         //Settings for Advertising
         add_settings_section( 'amp_pro_adsense_settings', __( 'Google Adsense', 'amp-pro' ), array ($this, 'googleAdSenseCallback'), 'amp-pro' );
-
-
-
-        add_settings_field( 'amp_pro_analytics_ga_ua', __( 'Google Analytics ID: <br/><em><a href="https://support.google.com/analytics/answer/1032385?hl=en" target="_blank">Need help finding your tracking ID?</a></em>', 'amp-pro' ), array ($this, 'gaUACallback'), 'amp-pro', 'amp_pro_analytics_settings' );
-        add_settings_field( 'amp_pro_analytics_outbound', __( 'Track outbound links?: ', 'amp-pro' ), array ($this, 'outboundTrackingCallback'), 'amp-pro', 'amp_pro_analytics_settings' );
-        add_settings_field( 'amp_pro_analytics_amazon', __( 'Track Amazon links separately?: ', 'amp-pro' ), array ($this, 'amazonTrackingCallback'), 'amp-pro', 'amp_pro_analytics_settings' );
-
 
         add_settings_field( 'amp_pro_adsense_account', __( 'Google AdSense ID: ', 'amp-pro' ), array ($this, 'adSenseAccountCallback'), 'amp-pro', 'amp_pro_adsense_settings' );
         add_settings_field( 'amp_pro_adsense_adslot', __( 'Google AdSense AdSlot: ', 'amp-pro' ), array ($this, 'adSenseAdSlotCallback'), 'amp-pro', 'amp_pro_adsense_settings' );
@@ -128,52 +115,6 @@ class ampProSettings
     function googleAdSenseCallback() {}
 
     /**
-     * Google Analytics UA setting callback.
-     *
-     * @since 0.0.1
-     */
-    function gaUACallback() {
-        $options = get_option( 'amp_pro_analytics_settings' );
-        ?>
-        <input type='text' name='amp_pro_analytics_settings[amp_pro_analytics_ga_ua]' value='<?php echo $options['amp_pro_analytics_ga_ua']; ?>'>
-        <?php
-    }
-
-    /**
-     * Event tracking callback.
-     *
-     * @since 0.0.1
-     */
-    function outboundTrackingCallback() {
-        $options = get_option( 'amp_pro_analytics_settings' );
-        ?>
-        <input type='checkbox' name='amp_pro_analytics_settings[amp_pro_analytics_outbound]' value='1'
-            <?php
-            if ($options['amp_pro_analytics_outbound']) echo 'checked';
-            ?>
-        >
-        <?php
-    }
-
-
-    /**
-     * Only Amazon Event tracking callback.
-     *
-     * @since 0.0.1
-     */
-    function amazonTrackingCallback() {
-        $options = get_option( 'amp_pro_analytics_settings' );
-        ?>
-        <input type='checkbox' name='amp_pro_analytics_settings[amp_pro_analytics_amazon]' value='1'
-            <?php
-            if ($options['amp_pro_analytics_amazon']) echo 'checked';
-            ?>
-        >
-        <?php
-    }
-
-
-    /**
      * Google AdSense account callback.
      *
      */
@@ -210,31 +151,6 @@ class ampProSettings
         ?>
         <input type='text' name='amp_pro_adsense_settings[amp_pro_adsense_paragraphs]' value='<?php echo $options['amp_pro_adsense_paragraphs']; ?>'>
         <?php
-    }
-    /**
-     * Sanitizes settings before they get to the database.
-     *
-     * @since 0.0.1
-     *
-     * @param $input array Options array.
-     *
-     * @return array Sanitized, database-ready options array.
-     */
-    function amp_pro_analytics_settings_sanitize_callback( $input ) {
-
-        if ( $input['amp_pro_analytics_ga_ua'] ) {
-            $input['amp_pro_analytics_ga_ua'] = sanitize_text_field( $input['amp_pro_analytics_ga_ua'] );
-        }
-
-        if ( $input['amp_pro_analytics_outbound'] ) {
-            $input['amp_pro_analytics_outbound'] = 1;
-        }
-
-        if ( $input['amp_pro_analytics_amazon'] ) {
-            $input['amp_pro_analytics_amazon'] = 1;
-        }
-
-        return $input;
     }
 
     /**
